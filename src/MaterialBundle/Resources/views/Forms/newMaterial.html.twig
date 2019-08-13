@@ -1,0 +1,30 @@
+{% extends '@Material/Templates/header.html.twig' %}
+
+{# Block d'affichage du formulaire #}
+{% block section %}
+<section class="text-dark container text-center mt-5 pt-2 bg-light">
+  <h2 class="mt-5 mb-5">Ajouter un nouvel outil</h2>
+    {# Affichage du formulaire #}
+    {{ form_start(formNew, {'attr': {'class': 'form-group offset-2 col-8 border border-dark p-5'}, 'method': 'POST', 'action': path('material_new')}) }}
+    
+      {# Champs nom de l'outil #}
+      {{ form_row(formNew.name, { 'attr': { 'class': 'form-control text-center' }, 'label': "Nom de l'article: ", 'required': true }) }}
+      {# Champs prix de l'outil #}
+      {{ form_row(formNew.price, { 'attr': { 'class': 'form-control text-center' }, 'label': 'Prix:', 'required': true }) }}
+      {# Champs quantité de l'outil #}
+      {{ form_row(formNew.quantity, {'attr': {'class': 'form-control text-center'}, 'label': 'Quantité: ', 'required': true }) }}
+      {# Boutton de validation #}
+      <input type="submit" value="Ajouter nouvel outil" class="btn btn-success mt-3" />
+
+    {{ form_end(formNew) }}
+</section>
+{% endblock %}
+
+{# Liste des scripts #}
+{% block custom_scripts %}
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    {# Script bootstrap + jquery #}
+	<script type = "text/javascript" src = "https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+{% endblock custom_scripts %}

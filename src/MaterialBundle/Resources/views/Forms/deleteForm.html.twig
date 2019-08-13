@@ -1,0 +1,22 @@
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            {# header de la modale #}
+            <div class="modal-header">
+                <h5 class="deleteModalTitle">Suppression</h5>
+            </div>
+            {# Body de la fenêtre modale: On affiche un message demandant la confirmation de la suppression de l'outil #}
+            <div class="modal-body">
+                <p class="delete_modal_body text-center"></p>
+            </div>
+            {# Footer de la fenêtre modale #}
+            <div class="modal-footer">
+                {# Boutton de validation: suppression de l'outil #}
+                <button type="button" class="btn btn-secondary dismissModal" data-dismiss="modal">Annuler</button>
+                {{ form_start(delete, {'method': 'POST', 'attr': {'id': 'delete_form', 'data-path': path('material_delete', {id: ':slug:'}), 'data-value': 'null'}}) }}
+                <input type="submit" class="btn btn-danger" value="Supprimer l'outil" />
+                {{ form_end(delete) }}
+            </div>
+        </div>
+    </div>
+</div>

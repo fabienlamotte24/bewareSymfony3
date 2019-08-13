@@ -1,0 +1,45 @@
+<div class="modal fade" id="presentationModale" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            {# header de la modale #}
+            <div class="modal-header">
+                {# Titre de présentation du produit #}
+                <h5 class="modal-title modaleTitle"></h5>
+                {# Titre de modification du produit #}
+                <h5 class="modal-title modifyTitle"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {# Body de la fenêtre modale #}
+            <div class="modal-body">
+                {# Présentaton du produit #}
+                <div class="first_modal_body text-center" id="modalBody">
+                </div>
+                {# Formulaire de modification du produit #}
+                <div class="second_modal_body text-center">
+                    {{ form_start(modify, {'method': 'POST', 'attr'  : { 'id' : 'update_form', 'data-path' : path('material_update', { id : ':slug:' }), 'data-value' : 'null' }}) }}
+                        {{ form_row(modify.name, { 'attr': { 'class': 'form-control text-center' }, 'label': "Nom de l'outil:", 'required': true }) }}
+                        {{ form_row(modify.price, { 'attr': { 'class': 'form-control text-center' }, 'label': "Prix:", 'required': true }) }}
+                        {{ form_row(modify.quantity, { 'attr': { 'class': 'form-control text-center' }, 'label': "Quantité", 'required': true }) }}
+                </div>
+            </div>
+            {# Footer de la fenêtre modale #}
+            <div class="modal-footer">
+                {# Bouttons d'action de la vue présentation du produit #}
+                <div class="first_modal_buttons">
+                    <button type="button" class="btn btn-secondary dismissModal" data-dismiss="modal">Revenir à la liste</button>
+                    <button id="edit-material-button" type="button" class="btn btn-primary modify_button">Modifier l'outil</button>
+                </div>
+                {# Bouttons d'action de la vue changement du produit #}
+                <div class="second_modal_buttons">
+                    <div class="element-form">
+                        <button type="button" class="btn btn-secondary dismissModal" data-dismiss="modal">Annuler</button>
+                        <input type="submit" class="btn btn-success" value="Enregistrer les modifications" />
+                    </div>
+                    {{ form_end(modify) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

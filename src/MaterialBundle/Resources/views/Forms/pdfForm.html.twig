@@ -1,0 +1,22 @@
+<div class="modal fade" id="pdfModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            {# header de la modale #}
+            <div class="modal-header">
+                <h5 class="pdfModalTitle">Affichage du pdf</h5>
+            </div>
+            {# Body de la fenêtre modale: On affiche un message demandant la confirmation de la suppression de l'outil #}
+            <div class="modal-body">
+                <p class="pdf_modal_body text-center"></p>
+            </div>
+            {# Footer de la fenêtre modale #}
+            <div class="modal-footer">
+                {# Boutton de validation: suppression de l'outil #}
+                <button type="button" class="btn btn-secondary dismissModal" data-dismiss="modal">Annuler</button>
+                {{ form_start(pdf, {'method': 'POST', 'attr': {'id': 'pdf_form', 'data-path': path('material_pdf', {id: ':slug:'}), 'data-value': 'null'}}) }}
+                <input type="submit" class="btn btn-info" value="Afficher le pdf" />
+                {{ form_end(pdf) }}
+            </div>
+        </div>
+    </div>
+</div>

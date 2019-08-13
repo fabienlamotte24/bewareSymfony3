@@ -1,0 +1,59 @@
+{% extends '@Material/Templates/header.html.twig' %}
+{# Block section du tableau des outils #}
+{% block section %}
+    <section class="container bg-light mt-2 overflow-auto">
+        <h2 class="text-center p-5">Voici la liste de tout vos outils</h2>
+        <table id="myTable" class="display table table-dark">
+            <thead class="text-center">
+                <tr>
+                    <th>Nom</th>
+                    <th>Prix</th>
+                    <th>Quantité</th>
+                    <th>Date de création</th>
+                    <th>Actions</th>
+                    <th>Actions</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody class="text-dark text-center">
+                {% for mat in material %}
+                  <tr class="text-center">
+                      <td id="getName{{ mat.getId }}">{{ mat.getName }}</td>
+                      <td id="getPrice{{ mat.getId }}">{{ mat.getPrice }}</td>
+                      <td id="getQuantity{{ mat.getId }}">{{ mat.getQuantity }}</td>
+                      <td id="getDateCreated{{ mat.getId }}">{{ mat.getDateCreated|date('d/m/Y') }}</td>
+                      <td><button type="button" class="btn btn-primary" data-toggle="modal" id="{{ mat.getId }}" onClick="toolToModify(this)" data-target="#presentationModale">Voir</button></td>
+                      <td><button type="button" class="btn btn-danger" data-toggle="modal" id="{{ mat.getId }}" onClick="toolToDelete(this)" data-target="#deleteModal">Supprimer</button></td>
+                      <td><button type="button" class="btn btn-info" data-toggle="modal" id="{{ mat.getId }}" onClick="showPdf(this)" data-target="#pdfModal">Afficher pdf</button></td>
+                  </tr>
+                {% endfor %}
+                {% include '@Material/Forms/updateForm.html.twig' %}
+                {% include '@Material/Forms/deleteForm.html.twig' %}
+                {% include '@Material/Forms/pdfForm.html.twig' %}
+            </tbody>
+            <tfoot class="text-center">
+                <tr class="text-center">
+                    <th>Nom</th>
+                    <th>Prix</th>
+                    <th>Quantité</th>
+                    <th>Date de création</th>
+                    <th>Actions</th>
+                    <th>Actions</th>
+                    <th>Actions</th>
+                </tr>
+            </tfoot>
+        </table>
+    </section>
+{% endblock section %}
+{# Liste des scripts spécifique à listing #}
+{% block custom_scripts %}
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    {# plug-in datatable jquery #}
+	<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    {# Script bootstrap + jquery #}
+	<script type = "text/javascript" src = "https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    {# Mon code jquery #}
+    <script src="{{ asset('js/script.js') }}"></script>
+{% endblock custom_scripts %}

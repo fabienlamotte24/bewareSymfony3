@@ -1,0 +1,23 @@
+material_homepage:
+    path:     /
+    defaults: { _controller: MaterialBundle:Default:index }
+
+material_listing:
+    path:     /listing
+    defaults: { _controller: MaterialBundle:Default:listing }
+
+material_new:
+    path:     /new
+    defaults: { _controller: MaterialBundle:Default:newMaterial }
+
+material_update:
+    path:     /update/{id}
+    defaults: { _controller: MaterialBundle:Default:update }
+
+material_delete:
+    path:     /delete/{id}
+    defaults: { _controller: MaterialBundle:Default:delete }
+
+material_pdf:
+    path:     /pdf/{id}
+    defaults: { _controller: MaterialBundle:Default:pdf }
