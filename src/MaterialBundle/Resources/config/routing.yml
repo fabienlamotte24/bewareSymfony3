@@ -6,6 +6,14 @@ material_listing:
     path:     /listing
     defaults: { _controller: MaterialBundle:Default:listing }
 
+material_soldout:
+    path:     /soldout
+    defaults: { _controller: MaterialBundle:Default:soldout }
+
+material_supplying:
+    path:     /supplying/{id}
+    defaults: { _controller: MaterialBundle:Default:supplying }
+
 material_new:
     path:     /new
     defaults: { _controller: MaterialBundle:Default:newMaterial }
@@ -21,3 +29,7 @@ material_delete:
 material_pdf:
     path:     /pdf/{id}
     defaults: { _controller: MaterialBundle:Default:pdf }
+
+material_mailing:
+    path:     /mailing
+    defaults: { _controller: MaterialBundle:Default:mailing }

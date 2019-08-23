@@ -17,7 +17,15 @@
 					{% if app.request.pathinfo == "/listing" %}
 						<a class="nav-link biggerNavLing text-dark" href="/listing">Ma liste</a>
 					{% else %}
-						<a class="nav-link text-secondary" href="/listing">listing</a>
+						<a class="nav-link text-secondary" href="/listing">Ma liste</a>
+					{% endif %}
+				</li>
+				<li class="nav-item">
+					{# Pour la liste des outils #}
+					{% if app.request.pathinfo == "/soldout" %}
+						<a class="nav-link biggerNavLing text-dark" href="/soldout">Rupture de stock</a>
+					{% else %}
+						<a class="nav-link text-secondary" href="/soldout">Rupture de stock</a>
 					{% endif %}
 				</li>
 				<li class="nav-item">
@@ -31,6 +39,21 @@
 			</ul>
 		</div>
 	</nav>
+        {% for success in app.flashes('success') %}
+            <div class="flash-notice">
+                <p class="offset-4 col-4 bg-success text-center text-white p-2 flash">{{ success }}</p>
+            </div>
+        {% endfor %}
+        {% for error in app.flashes('error') %}
+            <div class="flash-notice">
+                <p class="offset-4 col-4 bg-danger text-center text-white p-2 flash">{{ error }}</p>
+            </div>
+        {% endfor %}
+        {% for warning in app.flashes('warning') %}
+            <div class="flash-notice">
+                <p class="offset-4 col-4 bg-danger text-center text-white p-2 flash">{{ warning }}</p>
+            </div>
+        {% endfor %}
     {% block section %}{% endblock section %}
     {% block custom_scripts %}{% endblock custom_scripts %}
 </body>

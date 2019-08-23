@@ -125,3 +125,4 @@ function showPdf(that){
 	$('.pdf_modal_body').empty();
 	$('.pdf_modal_body').prepend('Afficher le pdf de l\'article "' + getName + '" ?');
 }
+$('.flash-notice').delay(1500).slideUp(500);

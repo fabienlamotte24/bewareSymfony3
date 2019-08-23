@@ -4,6 +4,7 @@ namespace MaterialBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use MaterialBundle\Entity\Material;
 use MaterialBundle\Form\MaterialType;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,14 +22,21 @@ class DefaultController extends Controller
     /**
      * Méthode menant à la page "listing", qui affiche la liste des outils de l'utilisateur
      */
-    public function listingAction(){
+    public function listingAction(Request $request){
         //Connexion à la base de donnée, avec l'entité Material
         $entityManager = $this->getDoctrine();
         $repo = $entityManager->getRepository(Material::class);
-        //Nouvelles instances de la classe Material
+
+        /**
+         * Nouvelles instances de la classe Material
+         */
+        //Liste des outils en stock
         $material = new Material();
+        //Formulaire de modification
         $modify = new Material();
+        //Formulaire de suppression
         $delete = new Material();
+        //Chargement d'un fichier pdf
         $pdf = new Material();
 
         /**
@@ -55,6 +63,71 @@ class DefaultController extends Controller
     }
 
     /**
+     * Méthode menant à la page "rupture de stock", qui affiche la liste des outils sans quantité positive de l'utilisateur
+     * similaire à listingAction, il n'y a que la méthode du modèl qui change
+     */
+    public function soldOutAction(){
+        //Connexion à la base de donnée, avec l'entité Material
+        $entityManager = $this->getDoctrine();
+        $repo = $entityManager->getRepository(Material::class);
+
+        /**
+         * Nouvelles instance de la classe Material
+         */
+        //Formulaire d'ajout de quantité
+        $supplyTool = new Material();
+        //Liste des outils sans stock
+        $soldOut = new Material();
+
+        //Création du formulaire pour la quantité
+        $formSupply = $this->createFormBuilder($supplyTool)
+                             ->add('quantity', IntegerType::class)
+                             ->getForm();
+        //Recherche des outils sans stock avec la méthode get_sold_out_materials du model Material
+        $soldOut = $repo->get_sold_out_materials();
+
+        //On retourne la vue de la liste des outils sans stock 
+        return $this->render("@Material/Materials/soldout.html.twig", [
+            'soldOut' => $soldOut,
+            'formSupply' => $formSupply->createView()
+        ]);
+    }
+
+    /**
+     * Méthode permettant le réapprovisionnement d'un outil en stock
+     */
+    public function supplyingAction(Request $request, int $id){
+		//Connexion à la base de donnée
+        $entityManager = $this->getDoctrine()->getManager();
+		//Appel de la table Materials, avec comme parametre un id pour isoler la ligne à opérer
+        $reSupplyMaterial = $entityManager->getRepository(Material::class)->find($id);
+        //Création du formulaire pour la modification de la quantité
+        $form = $this->createFormBuilder($reSupplyMaterial)
+                        ->add('quantity', IntegerType::class)
+                        ->getForm();
+        //On hydrate le formulaire avec les informations contenue dans la requête
+        $form->handleRequest($request);
+        //Puis on vérifie que le formulaire est valide et correctement soumis
+        if($form->isSubmitted() && $form->isValid()){
+            //On vérifie que la quantité donnée est au dessus de 0 pour la réintégrer dans la liste des outils en stock
+            if($reSupplyMaterial->getQuantity() <= 0){
+                //Si ce n'est pas le cas, on affiche un message d'erreur
+                $this->addFlash('error', 'Veuillez entrer un nombre au-dessus de 0 pour l\'outil "' . $reSupplyMaterial->getName() . '"');
+                //Puis on redirige vers la vue des outils sans stock, avec le message d'erreur
+            } else {
+                //Si c'est le cas, alors on modifie le statut du stock
+                $reSupplyMaterial->setSoldOut(false);
+                //On met à jour le model
+                $entityManager->flush();
+                //On prépare un message de validation
+                $this->addFlash('success', $reSupplyMaterial->getName() . ' a bien été réapprovisionné');
+                //Puis on redirige la vue dans la liste des outils sans stock avecle message de validation
+            }
+            return $this->redirectToRoute('material_soldout');
+        }
+    }
+
+    /**
      * Méthode permettant la création d'un outil
      */
     public function newMaterialAction(Request $request){
@@ -69,16 +142,32 @@ class DefaultController extends Controller
         $form->handleRequest($request);
         //On vérifie si une requête a été envoyée avec les bonnes données
         if($form->isSubmitted() && $form->isValid()){
-            //On auto-attribue la date à la variable dédiée (Puisque non affichée sur le formulaire)
-            $newMaterial->setDateCreated(new \dateTime() );
-            //On applique l'ajout à l'entité Material
-            $entityManager->persist($newMaterial);
-            //On met à jour le model
-            $entityManager->flush();
-            //Puis on revoi vers la liste
-            return $this->redirectToRoute('material_listing');
+            if($newMaterial->getPrice() <= 0){
+                //On prépare un message d'erreur: Le prix ne peut pas être inférieur à 0
+                $this->addFlash("error", 'Le prix de "' . $newMaterial->getName() . '" ne peut pas être inférieur ou égal à 0');
+                //Puis on revoi vers la page de création d'outil
+                return $this->redirectToRoute('material_new');
+            } else {
+                //nous vérifions la quantité donnée par l'utilisateur, afin de lui attribuer le status de soldOut
+                if($newMaterial->getQuantity() <= 0){
+                    $newMaterial->setSoldOut(true);
+                } else {
+                    $newMaterial->setSoldOut(false);
+                }
+                //On auto-attribue la date à la variable dédiée (Puisque non affichée sur le formulaire)
+                $newMaterial->setDateCreated(new \dateTime() );
+                //On applique l'ajout à l'entité Material
+                $entityManager->persist($newMaterial);
+                //On met à jour le model
+                $entityManager->flush();
+                //Puis on revoi vers la liste
+                return $this->redirectToRoute('material_listing');
+            }
         }
 
+        /**
+         * On paramètre de base l'affichage vers la vue de création d'outil, avec l'affichage du formulaire
+         */
         return $this->render('@Material/Forms/newMaterial.html.twig', [
             'formNew' => $form->createView()
         ]);
@@ -99,16 +188,38 @@ class DefaultController extends Controller
 				'No material found for id '.$id
 			);
         }
-		//Création d'un formulaire
+		//Création du formulaire de modification
 		$form = $this->createForm(MaterialType::class, $modifyMaterial);
-		//Hydratation du formulaire avec les données récupérés par la requête
+		//Hydratation du formulaire avec les données récupérés dans la requête
         $form->handleRequest($request);
-        //Condition pour vérifier si une requête a été passée, et si les données rentrées sont valides
+        //Condition pour vérifier que le formulaire est valide et soumis
 		if ($form->isSubmitted() && $form->isValid()) {
-			//Mise à jour du model
-			$entityManager->flush();
-			//Affichage de la vue listing
-			return $this->redirectToRoute('material_listing');
+            //On vérifie que le prix est au-dessus de 0
+            if($modifyMaterial->getPrice() <= 0){
+                //si ce n'est pas le cas, on prépare un message d'erreur
+                $this->addFlash("error", 'Le prix de l\'outil "' . $modifyMaterial->getName() . '" ne peut pas être inférieur ou égal à 0');
+            } else {
+                //Nous vérifions si la quantité est en-dessous de 0
+                if($modifyMaterial->getQuantity() <= 0){
+                    //Si c'est le cas, on modifie son état en base de donnée: il devient donc en rupture de stock
+                    $modifyMaterial->setSoldOut(true);
+                    //Mise à jour du model
+                    $entityManager->flush();
+                    //Nous lançons ainsi la fonction d'envoi de mail
+                    $this->mailing();
+                } else {
+                    //Mise à jour du model
+                    $entityManager->flush();
+                    //On paramètre un message de succès
+                    $this->addFlash("success", 'Changement de l\'outil ' . $modifyMaterial->getName() . ' effectué avec succès');
+                }
+            }
+            //On redirige vers la vue qui liste les outils en stock
+            return $this->redirectToRoute("material_listing");
+        } else {
+            $this->addFlash('error', 'Le nom que vous avez demandé est déjà attribué - changement impossible');
+            //Affichage de la vue listing
+            return $this->redirectToRoute('material_listing');  
         }
 	}
 
@@ -131,6 +242,8 @@ class DefaultController extends Controller
                 $entityManager->remove($deleteMaterial);
                 //On met à jour le model
                 $entityManager->flush();
+                //On paramètre un message de succès
+                $this->addFlash('success', 'Suppression de l\'outil "' . $deleteMaterial->getName() . '" bien effectuée');
                 //On retourne la vue vers la liste des outils
                 return $this->redirectToRoute('material_listing');
             }
@@ -229,5 +342,12 @@ class DefaultController extends Controller
 		//Affichage du fichier pdf dans une page dédiée
         return new Response($pdf->Output(), 200, array(
             'Content-Type' => 'application/pdf'));
-	}
+    }
+    
+    /**
+     * Envoi de mail à l'admin
+     */
+    public function mailing(Request $request, \Swift_Mailer $mailer){
+        dump($mailer);die();
+    }
 }

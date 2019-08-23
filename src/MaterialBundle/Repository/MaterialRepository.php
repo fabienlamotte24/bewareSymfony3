@@ -10,12 +10,23 @@ namespace MaterialBundle\Repository;
  */
 class MaterialRepository extends \Doctrine\ORM\EntityRepository
 {
-    //Méthode permettant d'obtenir tout les outils de l'utilisateur
+    //Méthode permettant d'obtenir tout les outils en stock
 	public function get_all_materials(){
-		$qb = $this->createQueryBuilder('u');
-		$query = $qb->select('u')
-		->getQuery();
-		$result = $query->getResult();
+		$result = $this->createQueryBuilder("mat")
+					   ->where("mat.soldOut = 0")
+					   ->getQuery()
+					   ->getResult();
+		return $result;
+	}
+
+	/**
+	 * Méthode permettant d'obtenir les outils en rupture de stock
+	 */
+	public function get_sold_out_materials(){
+		$result = $this->createQueryBuilder("mat")
+					   ->where("mat.soldOut = 1")
+					   ->getQuery()
+					   ->getResult();
 		return $result;
 	}
 }

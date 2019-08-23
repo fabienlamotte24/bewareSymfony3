@@ -3,14 +3,12 @@
 namespace MaterialBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Material
  *
  * @ORM\Table(name="material")
  * @ORM\Entity(repositoryClass="MaterialBundle\Repository\MaterialRepository")
- * @UniqueEntity(fields="name", message="Ce nom est déjà attribué")
  */
 class Material
 {
@@ -27,7 +25,6 @@ class Material
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, unique=true)
-     * 
      */
     private $name;
 
@@ -35,7 +32,6 @@ class Material
      * @var float
      *
      * @ORM\Column(name="price", type="float")
-     * 
      */
     private $price;
 
@@ -56,7 +52,7 @@ class Material
     /**
      * @var boolean
      * 
-     * @ORM\Column(name="soldOut", type="boolean")
+     * @ORM\Column(name="sold_out", type="boolean")
      */
     private $soldOut;
 
@@ -176,28 +172,5 @@ class Material
     {
         return $this->dateCreated;
     }
-
-    /**
-     * Set soldOut
-     *
-     * @param boolean $soldOut
-     *
-     * @return Material
-     */
-    public function setSoldOut($soldOut)
-    {
-        $this->soldOut = $soldOut;
-
-        return $this;
-    }
-
-    /**
-     * Get soldOut
-     *
-     * @return boolean
-     */
-    public function getSoldOut()
-    {
-        return $this->soldOut;
-    }
 }
+

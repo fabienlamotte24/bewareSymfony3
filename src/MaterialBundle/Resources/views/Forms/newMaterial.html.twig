@@ -4,18 +4,39 @@
 {% block section %}
 <section class="text-dark container text-center mt-5 pt-2 bg-light">
   <h2 class="mt-5 mb-5">Ajouter un nouvel outil</h2>
+    {% for error in app.flashes('error') %}
+      <div class="flash-notice">
+          <p class="offset-4 col-4 bg-danger text-center text-white p-2 flash">{{ error }}</p>
+      </div>
+    {% endfor %}
+  
     {# Affichage du formulaire #}
     {{ form_start(formNew, {'attr': {'class': 'form-group offset-2 col-8 border border-dark p-5'}, 'method': 'POST', 'action': path('material_new')}) }}
     
       {# Champs nom de l'outil #}
-      {{ form_row(formNew.name, { 'attr': { 'class': 'form-control text-center' }, 'label': "Nom de l'article: ", 'required': true }) }}
+      <div class="toolName">
+        {{ form_label(formNew.name, "Nom de l'article: ") }}
+        {{ form_widget(formNew.name, { 'attr': { 'class': 'form-control text-center' }, 'required': true }) }}
+      </div>
       {# Champs prix de l'outil #}
-      {{ form_row(formNew.price, { 'attr': { 'class': 'form-control text-center' }, 'label': 'Prix:', 'required': true }) }}
+      <div class="toolPrice">
+        {{ form_label(formNew.price, "Prix: ") }}
+        {{ form_widget(formNew.price, { 'attr': { 'class': 'form-control text-center' }, 'required': true }) }}
+      </div>
       {# Champs quantité de l'outil #}
-      {{ form_row(formNew.quantity, {'attr': {'class': 'form-control text-center'}, 'label': 'Quantité: ', 'required': true }) }}
+      <div class="toolQuantity">
+        {{ form_label(formNew.quantity, "Quantité: ") }}
+        {{ form_widget(formNew.quantity, { 'attr': { 'class': 'form-control text-center' }, 'required': true }) }}
+      </div>
       {# Boutton de validation #}
       <input type="submit" value="Ajouter nouvel outil" class="btn btn-success mt-3" />
-
+      {# Ligne des erreurs du formulaire #}
+      <ul class="list-unstyled text-danger">
+        {{ form_errors(formNew.name, { 'attr': { 'class': 'form-control text-center' }}) }}
+        {{ form_errors(formNew.price, { 'attr': { 'class': 'form-control text-center' }}) }}
+        {{ form_errors(formNew.quantity, { 'attr': { 'class': 'form-control text-center' }}) }}
+      </ul>
+      
     {{ form_end(formNew) }}
 </section>
 {% endblock %}

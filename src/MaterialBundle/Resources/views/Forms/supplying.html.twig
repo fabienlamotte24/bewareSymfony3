@@ -1,0 +1,26 @@
+<div class="modal fade" id="supply" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            {# header de la modale #}
+            <div class="modal-header">
+                {# Titre de présentation du produit #}
+                <h5 class="modal-title modaleTitle">Réapprovisionnement</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {# Body de la fenêtre modale #}
+            <div class="modal-body text-center">
+                {{ form_start(formSupply, {'method': 'POST', 'attr': {'id': 'supply_form', 'data-path': path('material_supplying', {id: ':slug:'}), 'data-value': 'null', 'class': 'form_group'}}) }}
+                    {{ form_label(formSupply.quantity, 'Quantité') }}
+                    {{ form_widget(formSupply.quantity, {'attr': {'class': 'text-center form_control'}, 'required': true} ) }}
+            </div>
+            {# Footer de la fenêtre modale #}
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary dismissModal" data-dismiss="modal">Revenir à la liste</button>
+                <input type="submit" class="btn btn-success" value="Réapprovisioner" />
+                {{ form_end(formSupply) }}
+            </div>
+        </div>
+    </div>
+</div>

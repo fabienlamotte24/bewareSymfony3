@@ -19,9 +19,27 @@
                 {# Formulaire de modification du produit #}
                 <div class="second_modal_body text-center">
                     {{ form_start(modify, {'method': 'POST', 'attr'  : { 'id' : 'update_form', 'data-path' : path('material_update', { id : ':slug:' }), 'data-value' : 'null' }}) }}
-                        {{ form_row(modify.name, { 'attr': { 'class': 'form-control text-center' }, 'label': "Nom de l'outil:", 'required': true }) }}
-                        {{ form_row(modify.price, { 'attr': { 'class': 'form-control text-center' }, 'label': "Prix:", 'required': true }) }}
-                        {{ form_row(modify.quantity, { 'attr': { 'class': 'form-control text-center' }, 'label': "Quantité", 'required': true }) }}
+                        {# Champ du nom de l'outil #}
+                        <div class="toolName">
+                            {{ form_label(modify.name, "Nom de l'article: ") }}
+                            {{ form_widget(modify.name, { 'attr': { 'class': 'form-control text-center' }, 'required': true }) }}
+                        </div>
+                        {# Champ du prix de l'outil #}
+                        <div class="toolPrice">
+                            {{ form_label(modify.price, "Prix: ") }}
+                            {{ form_widget(modify.price, { 'attr': { 'class': 'form-control text-center' }, 'required': true }) }}
+                        </div>
+                        {# Champ du nombre d'outil #}
+                        <div class="toolQuantity">
+                            {{ form_label(modify.quantity, "Quantité: ") }}
+                            {{ form_widget(modify.quantity, { 'attr': { 'class': 'form-control text-center' }, 'required': true }) }}
+                        </div>
+                        {# Ligne des erreurs du formulaire #}
+                        <ul class="list-unstyled text-danger">
+                            {{ form_errors(modify.name, { 'attr': { 'class': 'form-control text-center' }}) }}
+                            {{ form_errors(modify.price, { 'attr': { 'class': 'form-control text-center' }}) }}
+                            {{ form_errors(modify.quantity, { 'attr': { 'class': 'form-control text-center' }}) }}
+                        </ul>
                 </div>
             </div>
             {# Footer de la fenêtre modale #}
