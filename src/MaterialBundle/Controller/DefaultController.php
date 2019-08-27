@@ -205,8 +205,8 @@ class DefaultController extends Controller
                     $modifyMaterial->setSoldOut(true);
                     //Mise à jour du model
                     $entityManager->flush();
+                    $this->mailingAction($modifyMaterial->getName());
                     //Nous lançons ainsi la fonction d'envoi de mail
-                    $this->mailing();
                 } else {
                     //Mise à jour du model
                     $entityManager->flush();
@@ -215,7 +215,7 @@ class DefaultController extends Controller
                 }
             }
             //On redirige vers la vue qui liste les outils en stock
-            return $this->redirectToRoute("material_listing");
+            return $this->redirectToRoute('material_listing');
         } else {
             $this->addFlash('error', 'Le nom que vous avez demandé est déjà attribué - changement impossible');
             //Affichage de la vue listing
@@ -347,7 +347,36 @@ class DefaultController extends Controller
     /**
      * Envoi de mail à l'admin
      */
-    public function mailing(Request $request, \Swift_Mailer $mailer){
-        dump($mailer);die();
+    private function mailingAction(String $name){
+
+        /**
+         *  Paramétrage du transport de swift
+         *      smtp.gmail.com => envoi vers le serveur mail de gmail
+         *      port 465 - encryption ssl pour l'envoi avec authentification
+         */
+        $transport = (new \Swift_SmtpTransport('smtp.gmail.com', 465, 'ssl'))
+        ->setUsername('testemailing133@gmail.com')
+        ->setPassword('Beware1234*');
+
+        //On hydrate le transport dans la variable mailer
+        $mailer = new \Swift_Mailer($transport);
+
+        //On configure le message à envoyer
+        $message = (new \Swift_Message('Rupture de stock - ' . $name))
+        ->setSubject('Rupture de stock')
+        ->setFrom(array('testemailing133@gmail.com'))
+        ->setTo(array('fabien.l02@outlook.fr'))
+        ->setBody($this->renderView('@Material/Email/mailing.html.twig', ['name' => $name]), 'text/html');
+        
+        //Si le message s'est bien envoyé
+        if($mailer->send($message)){
+            //On retourne un message de confirmation
+            $this->addFlash('success', 'Mail bien envoyé');
+            $this->redirectToRoute('material_listing');
+        } else {
+            //Sinon on retourne un message d'erreur
+            $this->addFlash('error', 'Mail non envoyé');
+            $this->redirectToRoute('material_listing');
+        }
     }
 }

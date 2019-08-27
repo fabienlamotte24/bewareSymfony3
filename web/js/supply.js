@@ -43,4 +43,5 @@ function supplyTool(that){
 	let action = $form.data().path.replace(':slug:', '') + $form.data().value;
 	$form[0].action = action;
 }
+
 $('.flash-notice').delay(1500).slideUp(500);

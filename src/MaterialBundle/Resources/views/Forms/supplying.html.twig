@@ -13,7 +13,7 @@
             <div class="modal-body text-center">
                 {{ form_start(formSupply, {'method': 'POST', 'attr': {'id': 'supply_form', 'data-path': path('material_supplying', {id: ':slug:'}), 'data-value': 'null', 'class': 'form_group'}}) }}
                     {{ form_label(formSupply.quantity, 'Quantité') }}
-                    {{ form_widget(formSupply.quantity, {'attr': {'class': 'text-center form_control'}, 'required': true} ) }}
+                    {{ form_widget(formSupply.quantity, {'attr': {'class': 'text-center form_control'}, 'required': true, 'value': 1} ) }}
             </div>
             {# Footer de la fenêtre modale #}
             <div class="modal-footer">
