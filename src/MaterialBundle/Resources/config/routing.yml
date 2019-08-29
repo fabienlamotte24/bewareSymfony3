@@ -33,3 +33,11 @@ material_pdf:
 material_mailing:
     path:     /mailing
     defaults: { _controller: MaterialBundle:Default:mailing }
+
+material_ajax_one_more:
+    path:     /ajax_one_more_request
+    defaults: { _controller: MaterialBundle:Default:plusAjax }
+
+material_ajax_one_less:
+    path:     /ajax_one_less_request
+    defaults: { _controller: MaterialBundle:Default:minusAjax }

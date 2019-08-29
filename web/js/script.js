@@ -1,4 +1,5 @@
 
+
 //Gestion de l"animation des vue changement d"information
 $(function(){
 	//Affichage du tableau avec plugin jquery datatable
@@ -51,6 +52,7 @@ $(function(){
 		$(".first_modal_buttons").delay(300).fadeIn();
 		$(".modaleTitle").delay(300).fadeIn();
 	});
+	
 });
 
 //Fonction pour afficher l'infos produit au click du bouton "voir"
@@ -88,6 +90,7 @@ function toolToModify(that){
 	$('.first_modal_body').prepend("<p>L'article '" + getName + "' coûte " + getPrice + " €.<br />Vous en avez " + getQuantity + " en stock.<br />Cet article a été ajouté le " + getDateCreated + "</p>");
 }
 
+//fonction pour supprimer un outil
 function toolToDelete(that){
 	//On stock l'id passé en parametre de la fonction
 	var id = that.id;
@@ -110,13 +113,14 @@ function toolToDelete(that){
 	$('.delete_modal_body').prepend("Vous vous apprêtez à supprimer définitivement l'outil '" + getName + "'<br />Confirmer ?");
 }
 
+//Fonction pour afficher le pdf d'un outil au click
 function showPdf(that){
 	//On stock l'id passé en parametre de la fonction
-	var id = that.id;
+	let id = that.id;
 	//Puis on viens chercher les informations détaillées dans la liste
 	let getName = document.getElementById('getName' + id).innerHTML;
 
-	//On donne à l'action du formulaire l'id du produit pour le passer en paramètre dans le controller: updateAction
+	//On donne à l'action du formulaire l'id du outil pour le passer en paramètre dans le controller: updateAction
 	let $form = $('#pdf_form');
 	$form.data().value = id;
 	let action = $form.data().path.replace(':slug:', '') + $form.data().value;
@@ -125,4 +129,41 @@ function showPdf(that){
 	$('.pdf_modal_body').empty();
 	$('.pdf_modal_body').prepend('Afficher le pdf de l\'article "' + getName + '" ?');
 }
+
 $('.flash-notice').delay(1500).slideUp(500);
+
+//Fonction asynchrone permettant l'augmentation de la quantité d'un outil
+function plusAjax(that){
+	let id = that.id;
+	$.ajax({
+		url: '/ajax_one_more_request',
+		type: "POST",
+		dataType: "json",
+		data: { 
+			'id' : id
+		},
+		async: true,
+		success: function(response){
+			$('#getQuantity' + id).text(response.quantity);
+		}
+	});
+}
+//Fonction asynchrone permettant la diminition de la quantité d'un outil
+function minusAjax(that){
+	let id = that.id;
+	$.ajax({
+		url: '/ajax_one_less_request',
+		type: "POST",
+		dataType: "json",
+		data: { 
+			'id' : id
+		},
+		async: true,
+		success: function(response){
+			$('#getQuantity' + id).text(response.quantity);
+			if(response.quantity <= 0){
+				$('#line' + id).remove();
+			}
+		}
+	});
+}

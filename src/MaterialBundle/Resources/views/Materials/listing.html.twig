@@ -17,10 +17,18 @@
             </thead>
             <tbody class="text-dark text-center">
                 {% for mat in material %}
-                  <tr class="text-center">
+                  <tr class="text-center" id="line{{ mat.getId }}">
                       <td id="getName{{ mat.getId }}">{{ mat.getName }}</td>
                       <td id="getPrice{{ mat.getId }}">{{ mat.getPrice }}</td>
-                      <td id="getQuantity{{ mat.getId }}">{{ mat.getQuantity }}</td>
+                      <td>
+                        <a href="#" id="minus">
+                            <i class="fas fa-minus-circle text-primary" id="{{ mat.getId }}" onClick="minusAjax(this)"></i>
+                        </a>
+                            <span id="getQuantity{{ mat.getId }}">{{ mat.getQuantity }}</span>
+                        <a href="#" id="plus">
+                            <i class="fas fa-plus-circle text-primary" id="{{ mat.getId }}" onClick="plusAjax(this)"></i>
+                        </a>
+                      </td>
                       <td id="getDateCreated{{ mat.getId }}">{{ mat.getDateCreated|date('d/m/Y') }}</td>
                       <td><button type="button" class="btn btn-primary" data-toggle="modal" id="{{ mat.getId }}" onClick="toolToModify(this)" data-target="#presentationModale">Voir</button></td>
                       <td><button type="button" class="btn btn-danger" data-toggle="modal" id="{{ mat.getId }}" onClick="toolToDelete(this)" data-target="#deleteModal">Supprimer</button></td>
@@ -47,6 +55,7 @@
 {% endblock section %}
 {# Liste des scripts spécifique à listing #}
 {% block custom_scripts %}
+    <script src="https://kit.fontawesome.com/837ab1af47.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     {# plug-in datatable jquery #}
 	<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>

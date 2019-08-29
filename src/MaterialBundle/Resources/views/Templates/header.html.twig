@@ -40,17 +40,17 @@
 		</div>
 	</nav>
         {% for success in app.flashes('success') %}
-            <div class="flash-notice">
+            <div class="flash-notice flash" id="flashSuccess">
                 <p class="offset-4 col-4 bg-success text-center text-white p-2 flash">{{ success }}</p>
             </div>
         {% endfor %}
         {% for error in app.flashes('error') %}
-            <div class="flash-notice">
+            <div class="flash-notice flash" id="flashError">
                 <p class="offset-4 col-4 bg-danger text-center text-white p-2 flash">{{ error }}</p>
             </div>
         {% endfor %}
         {% for warning in app.flashes('warning') %}
-            <div class="flash-notice">
+            <div class="flash-notice flash">
                 <p class="offset-4 col-4 bg-danger text-center text-white p-2 flash">{{ warning }}</p>
             </div>
         {% endfor %}

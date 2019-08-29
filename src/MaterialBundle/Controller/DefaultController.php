@@ -365,18 +365,78 @@ class DefaultController extends Controller
         $message = (new \Swift_Message('Rupture de stock - ' . $name))
         ->setSubject('Rupture de stock')
         ->setFrom(array('testemailing133@gmail.com'))
-        ->setTo(array('fabien.l02@outlook.fr'))
+        ->setTo(array('testemailing133@gmail.com'))
         ->setBody($this->renderView('@Material/Email/mailing.html.twig', ['name' => $name]), 'text/html');
         
         //Si le message s'est bien envoyé
         if($mailer->send($message)){
             //On retourne un message de confirmation
-            $this->addFlash('success', 'Mail bien envoyé');
             $this->redirectToRoute('material_listing');
         } else {
             //Sinon on retourne un message d'erreur
-            $this->addFlash('error', 'Mail non envoyé');
             $this->redirectToRoute('material_listing');
+        }
+    }
+
+    /**
+     * Méthode Ajax pour augmenter la quantité de 1
+     */
+    public function plusAjaxAction(Request $request){
+        if($request->isXMLHttpRequest()){
+            //On stock la valeur de l'id dans la variable $id
+            $id = $request->request->get('id');
+            //Connexion base de donnée
+            $entityManager = $this->getDoctrine()->getManager();
+            //On stock les informations de la ligne correspondant à l'id précisé
+            $add = $entityManager->getRepository(Material::class)->find($id);
+            //On effecture l'opération => quantité + 1 de l'outil correspondant à l'id
+            $quantity = $add->getQuantity() + 1;
+            //On change la valeur de la base de données 
+            $add->setQuantity($quantity);
+            //Si la mise à jour du modèle s'effectue correctement
+            $entityManager->flush();
+            //On paramètre les informations à renvoyer à la requête Ajax 
+            $response = new Response(json_encode(array(
+                'quantity' => $quantity
+            )));
+            $response->headers->set('Content-Type', 'application/json');
+            //On retourne la réponse
+            return $response;
+        } else {
+            return new Response('ce n\'est pas une requête Ajax', 400);
+        }
+    }
+
+    /**
+     * Méthode Ajax pour diminuer la quantité de 1
+     */
+    public function minusAjaxAction(Request $request){
+        if($request->isXMLHttpRequest()){
+            //On stock la valeur de l'id dans la variable $id
+            $id = $request->request->get('id');
+            //Connexion base de donnée
+            $entityManager = $this->getDoctrine()->getManager();
+            //On stock les informations de la ligne correspondant à l'id précisé
+            $add = $entityManager->getRepository(Material::class)->find($id);
+            //On effecture l'opération => quantité + 1 de l'outil correspondant à l'id
+            $quantity = $add->getQuantity() - 1;
+            if($quantity <= 0){
+                $add->setSoldOut(1);
+                $this->mailingAction($add->getName());
+            }
+            //On change la valeur de la base de données 
+            $add->setQuantity($quantity);
+            //Si la mise à jour du modèle s'effectue correctement
+            $entityManager->flush();
+            //On paramètre les informations à renvoyer à la requête Ajax 
+            $response = new Response(json_encode(array(
+                'quantity' => $quantity,
+            )));
+            $response->headers->set('Content-Type', 'application/json');
+            //On retourne la réponse
+            return $response;
+        } else {
+            return new Response('ce n\'est pas une requête Ajax', 400);
         }
     }
 }
